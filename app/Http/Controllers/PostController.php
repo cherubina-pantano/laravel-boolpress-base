@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Post;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -37,7 +39,31 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        //dd($data);
+
+        //Validate
+        $request->validate($this->ruleValidation());
+
+        //Post SLUG
+        $data['slug'] = Str::slug($data['title'], '-');
+
+        //Se img presente
+        if(!empty($data['path_img'])) {
+            $data['path_img'] = Storage::disk('public')->put('images', $data['path_img']);
+        }
+
+        //Save to DB
+        $newPost = new Post();
+        $newPost->fill($data);
+
+        $saved = $newPost->save();
+
+        if($saved) {
+            return redirect()->route('posts.index');
+        } else {
+            return redirect()->route('homepage');
+        }
     }
 
     /**
@@ -46,9 +72,11 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        //
+        $post = Post::where('slug', $slug)->first();
+
+        return view('posts.show', compact('post'));
     }
 
     /**
@@ -83,5 +111,16 @@ class PostController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     *  Funzione di validazione
+     **/
+    private function ruleValidation() {
+        return [
+            'title' => 'required',
+            'body' => 'required',
+            'path_img' => 'image'
+        ];
     }
 }

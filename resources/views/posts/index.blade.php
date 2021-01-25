@@ -10,11 +10,11 @@
 
         @forelse ($posts as $post)
             <article class="mb-5">
-                <h2> {{ $post->tile}}</h2>
+                <h2> {{ $post->title}}</h2>
                 <h6> {{ $post->created_at->format('d/m/Y')}}</h6>
 
                 <p>{{ $post->body }}</p>
-                <a href="#">Read more</a>
+                <a href="{{ route('posts.show', $post->slug) }}">Read more</a>
             </article>
 
         @empty
