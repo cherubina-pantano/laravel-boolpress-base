@@ -23,3 +23,7 @@ Route::get('/','StaticPageController@home')->name('home');
 //ABOUT
 Route::get('/about','StaticPageController@about')->name('about');
 
+/**
+ * POST RESOURCE PAGES --- CRUD ---
+**/
+Route::resource('posts', 'PostController');
