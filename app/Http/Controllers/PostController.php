@@ -140,9 +140,22 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post) // <-- versione compatta di riga 145
     {
-        //
+        //$post = Post::find($id); 
+        $title = $post->title;
+        $image = $post->path_img;
+        $deleted = $post->delete();
+
+        if($deleted) {
+            //Elimina l'img se è presente
+            if(!empty($image)) {
+                Storage::disk('public')->delete($image);
+            }
+            return redirect()->route('posts.index')->with('post-deleted', $title);
+        } else {
+            return redirect()->route('homepage');
+        }
     }
 
     /**

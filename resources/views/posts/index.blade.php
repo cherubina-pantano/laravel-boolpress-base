@@ -3,6 +3,11 @@
 @section('content')
 
     <div class="container mb-5">
+        @if (session('post-deleted'))
+            <div class="alert alert-success">
+                Post "{{ session('post-deleted') }}" cancellato con successo.
+            </div>
+        @endif
 
         <h1>BLOG</h1>
 
