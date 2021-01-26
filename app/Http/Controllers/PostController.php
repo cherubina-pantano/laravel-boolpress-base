@@ -62,7 +62,7 @@ class PostController extends Controller
         if($saved) {
             return redirect()->route('posts.index');
         } else {
-            return redirect()->route('homepage');
+            return redirect()->route('home');
         }
     }
 
@@ -76,6 +76,11 @@ class PostController extends Controller
     {
         $post = Post::where('slug', $slug)->first();
 
+        //Check: esiste? not found 404
+        if(empty($post)) {
+            abort(404);
+        }
+
         return view('posts.show', compact('post'));
     }
 
@@ -88,6 +93,11 @@ class PostController extends Controller
     public function edit($slug)
     {
         $post = Post::where('slug', $slug)->first();
+
+        //Check: esiste? not found 404
+        if(empty($post)) {
+            abort(404);
+        }
 
         return view('posts.edit', compact('post'));
 
@@ -130,7 +140,7 @@ class PostController extends Controller
         if($updated) {
             return redirect()->route('posts.show', $post->slug);
         } else {
-            return redirect()->route('homepage');
+            return redirect()->route('home');
         }
     }
 
@@ -140,7 +150,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post) // <-- versione compatta di riga 145
+    public function destroy(Post $post) // <-- versione compatta di $post = Post::find($id)
     {
         //$post = Post::find($id); 
         $title = $post->title;
@@ -154,7 +164,7 @@ class PostController extends Controller
             }
             return redirect()->route('posts.index')->with('post-deleted', $title);
         } else {
-            return redirect()->route('homepage');
+            return redirect()->route('home');
         }
     }
 
