@@ -8,7 +8,7 @@
         <div>Last update: {{ $post->updated_at->diffForHumans() }}</div>
 
         <div class="actions mb-5">
-            <a class="btn btn-primary" href="#">Edit</a>
+            <a class="btn btn-primary" href="{{ route('posts.edit', $post->slug) }}">Edit</a>
         </div>
 
 

@@ -85,9 +85,12 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($slug)
     {
-        //
+        $post = Post::where('slug', $slug)->first();
+
+        return view('posts.edit', compact('post'));
+
     }
 
     /**
@@ -99,7 +102,36 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //Get data from FORM
+        $data = $request->all();
+
+        //VALIDAZIONE
+        $request->validate($this->ruleValidation());
+
+        //Get post to update
+        $post = Post::find($id);
+
+        //Slug update
+        $data['slug'] = Str::slug($data['title'], '-');
+
+        //Se cambia l'img
+        if(!empty($data['path_img'])) {
+            //Elimina l'img precedente/presente
+            if(!empty($post->path_img)) {
+                Storage::disk('public')->delete($post->path_img);
+            }
+            //Aggiunge l'img nuova
+            $data['path_img'] = Storage::disk('public')->put('images', $data['path_img']);
+        }
+
+        //UPDATE DB
+        $updated = $post->update($data);  // <--$fillable nel Model
+
+        if($updated) {
+            return redirect()->route('posts.show', $post->slug);
+        } else {
+            return redirect()->route('homepage');
+        }
     }
 
     /**
@@ -120,7 +152,7 @@ class PostController extends Controller
         return [
             'title' => 'required',
             'body' => 'required',
-            'path_img' => 'image'
+            'path_img' => 'mimes:jpg,bmp,png'
         ];
     }
 }
