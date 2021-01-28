@@ -18,6 +18,18 @@
             </form>
         </div>
 
+        <!-- TAGS -->
+        <section class="tags">
+            <h5>TAGS</h5>
+            <!-- In questo caso $post->tags, non voglio la relazione(-tags()-) ma voglio le proprietà -->
+            @forelse ($post->tags as $tag)
+                <span class="badge badge-dark"> {{$tag->name }} </span>
+            @empty
+                <p>No tags for this post.</p>
+            @endforelse
+        
+        </section>
+
 
         @if(!empty($post->path_img))
             <img src="{{ asset('storage/' . $post->path_img)}}" alt="{{$post->title}}">

@@ -63,6 +63,10 @@ class PostController extends Controller
         $saved = $newPost->save();
 
         if($saved) {
+            if (!empty($data['tags'])) {
+                // Pivot tra posts e tags
+                $newPost->tags()->attach($data['tags']);
+            }
             return redirect()->route('posts.index');
         } else {
             return redirect()->route('home');
