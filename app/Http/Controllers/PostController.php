@@ -100,13 +100,14 @@ class PostController extends Controller
     public function edit($slug)
     {
         $post = Post::where('slug', $slug)->first();
+        $tags = Tag::all();
 
         //Check: esiste? not found 404
         if(empty($post)) {
             abort(404);
         }
 
-        return view('posts.edit', compact('post'));
+        return view('posts.edit', compact('post', 'tags'));
 
     }
 
@@ -145,6 +146,12 @@ class PostController extends Controller
         $updated = $post->update($data);  // <--$fillable nel Model
 
         if($updated) {
+            if (!empty($data['tags'])) {
+                $post->tags()->sync($data['tags']);
+
+            } else {
+                $post->tags()->detach();
+            }
             return redirect()->route('posts.show', $post->slug);
         } else {
             return redirect()->route('home');
