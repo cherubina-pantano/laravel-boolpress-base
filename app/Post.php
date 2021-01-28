@@ -12,4 +12,13 @@ class Post extends Model
         'slug',
         'path_img'
     ];
+
+    /**
+     *  DB RELATIONS
+     **/
+
+     // posts - tags (many-to-many)
+     public function tags() {
+         return $this->belongsToMany('App\Tag');
+     }
 }
