@@ -169,6 +169,8 @@ class PostController extends Controller
         //$post = Post::find($id); 
         $title = $post->title;
         $image = $post->path_img;
+        
+        $post->tags()->detach();
         $deleted = $post->delete();
 
         if($deleted) {
